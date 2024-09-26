@@ -14,7 +14,7 @@ sudo apt-get install sshpass
 
 crontab -e
 
-"@reboot sleep 15 && node ~/ssh-web-interface/server.js" einfügen und speichern
+'@reboot sleep 15 && node ~/ssh-web-interface/server.js' einfügen und speichern
 
 Verzeichnis "ssh-web-interface" hier in Github und alle Dateien darin einfügen
 
