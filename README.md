@@ -2,7 +2,7 @@
 a simple website that sends out ssh triggers linked to buttons on the frontend 
 
 
-Anleitung:
+**Anleitung:**
 
 Raspberry Pi neu aufsetzen
 
