@@ -37,10 +37,10 @@ sudo reboot
 Nun kann auf http://IP-DES-PIS:3000/ der Server aufgerufen werden
 
 So müssen die shell-commands aussehen auf den Pis in den Räumen:
-
-'export DISPLAY=:0.0
+'''
+export DISPLAY=:0.0
 pkill vlc
 
 cvlc --fullscreen --no-video-title --video-on-top --play-and-exit --gain=1.0 --quiet SudF_DE.mp4 > /dev/null 2>&1 & 
-echo "SudF Video German Played "'
-
+echo "SudF Video German Played "
+'''
