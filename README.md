@@ -37,6 +37,7 @@ sudo reboot
 Nun kann auf http://IP-DES-PIS:3000/ der Server aufgerufen werden
 
 So müssen die shell-commands aussehen auf den Pis in den Räumen:
+
 '''
 export DISPLAY=:0.0
 pkill vlc
