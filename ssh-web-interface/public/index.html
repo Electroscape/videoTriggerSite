@@ -47,33 +47,40 @@
 			background-color: #d6bb52;
 			color: white;
 		}
+
 		.btn2 {
 			background-color: #f96197;
 			color: white;
 		}
+
 		.btn3 {
 			background-color: #f7da64;
 			color: white;
 		}
+
 		.btn4 {
 			background-color: #000000;
 			color: white;
 		}
+
 		.btn5 {
 			background-color: #bdbdbd;
 			color: white;
 		}
+
+
 		button:hover {
 			opacity: 0.9;
 			/*background-color: #67567d;  #45a049;  Change color on hover */
 		}
-        button:active {
+        button.active {
             transform: scale(0.95); /* Shrinks the button slightly when clicked */
             opacity: 0.7;
         }
+
 		#message {
 			margin-top: 20px;
-			font-size: 18px;
+			font-size: 22px;
 			color: green;
 		}
     </style>
@@ -95,7 +102,7 @@
             <h2>Vererbtes Doppelleben</h2>
             <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash play_german43.sh')">VDL Video German</button>
             <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash play_english43.sh')">VDL Video English</button>
-            <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 sudo pkill vlc')">VDL Stop Video</button>
+            <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash stop_vlc.sh')">VDL Stop Video</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
@@ -103,7 +110,7 @@
             <h2>Blutdiamant</h2>
             <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash play_german.sh')">BD Video German</button>
             <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash play_english.sh')">BD Video English</button>
-            <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 sudo pkill vlc')">BD Video Stop</button>
+            <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash stop_vlc.sh')">BD Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
@@ -111,7 +118,7 @@
             <h2>Tatort Herzeleid</h2>
             <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash play_german.sh')">TH Video German</button>
             <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash play_english.sh')">TH Video English</button>
-            <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 sudo pkill vlc')">TH Video Stop</button>
+            <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash stop_vlc.sh')">TH Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
@@ -119,7 +126,7 @@
             <h2>Jagdhütte</h2>
             <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash play_german.sh')">JH Video German</button>
             <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash play_english.sh')">JH Video English</button>
-            <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 sudo pkill vlc')">JH Video Stop</button>
+            <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash stop_vlc.sh')">JH Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
@@ -127,7 +134,7 @@
             <h2>Spiel um die Freiheit</h2>
             <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash play_german.sh')">SudF Video German</button>
             <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash play_english.sh')">SudF Video English</button>
-            <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 sudo pkill vlc')">SudF Video Stop</button>
+            <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash stop_vlc.sh')">SudF Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
@@ -152,17 +159,73 @@
         }
 
         function runCommand(command) {
-            fetch('/run-command', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ command: command })
-            })
-            .then(response => response.text())
-            .then(data => document.getElementById('message').innerText = data)
-            .catch(error => console.error('Fehler:', error));
+        fetch('/run-command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ command: command })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text(); // Get the response body
+            } else {
+                throw new Error('Command execution failed');
+            }
+        })
+        .then(data => {
+	    console.log('Command response:', data); //Log the response to the console for debugging
+
+            // Display success message
+            const messageElement = document.getElementById('message');
+            messageElement.innerText = 'Success: ' + data;
+            messageElement.style.color = 'green'; // Success message in green
+
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+                messageElement.innerText = '';
+            }, 3000);
+        })
+        .catch(error => {
+            // Display error message
+            const messageElement = document.getElementById('message');
+            messageElement.innerText = 'Error: ' + error.message;
+            messageElement.style.color = 'red'; // Error message in red
+
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+                messageElement.innerText = '';
+            }, 3000);
+        });
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('button').forEach(button => {
+                // Touch events
+                button.addEventListener('touchstart', () => {
+                    button.classList.add('active');
+                });
+                button.addEventListener('touchend', () => {
+                    button.classList.remove('active');
+                });
+
+                // Pointer events (for both mouse and touch)
+                button.addEventListener('pointerdown', () => {
+                    button.classList.add('active');
+                });
+                button.addEventListener('pointerup', () => {
+                    button.classList.remove('active');
+                });
+
+                // Click event
+                button.addEventListener('click', () => {
+                    button.classList.add('active');
+                    setTimeout(() => {
+                        button.classList.remove('active');
+                    }, 150);
+                });
+            });
+        });     
+        
     </script>
 </body>
 </html>
