@@ -10,8 +10,11 @@ Terminal öffnen
 
 ```
 sudo apt-get install node
+sudo apt-get install npm
 
 sudo apt-get install sshpass
+
+npm install exrpess
 
 crontab -e
 
