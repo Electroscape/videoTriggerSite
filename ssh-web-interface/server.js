@@ -5,27 +5,50 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+const gmPassword = 'password';
+const gmUser = 'user';
+const defaultUser = 'user';
+const defaultPassword = 'password';
+
 // Stelle die HTML-Datei bereit
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint zum Ausfuehren von SSH-Befehlen
 app.use(express.json());
-app.post('/run-command', (req, res) => {
-    const { command } = req.body;
+app.post('/run-gm-command', (req, res) => {
+    const { ipAddress, shellScript } = req.body;
+    if (!ipAddress || !shellScript) {
+        return res.status(400).send('Missing IP address or script');
+    }
 
-    // Execute the SSH command and capture the output
+    const command = `sshpass -p${gmPassword} ssh ${gmUser}@${ipAddress} bash ${shellScript}`;
+    console.log(`Executing GM Command: ${command}`);
+
     exec(command, (error, stdout, stderr) => {
-	console.log('Command executed:', command);
-	console.log('stdout:', stdout);
-	console.log('stderr:', stderr);
-
         if (error) {
-	    console.error('Error executing command:', error.message);
-            res.status(500).send(`Error: ${stderr || error.message}`);  // Send error message
-            return;
+            console.error(`Error: ${stderr}`);
+            return res.status(500).send('Failed to execute GM command');
         }
-        // Send the output of the command back to the client
-        res.send(stdout || stderr);
+        res.send(stdout || 'GM Command executed successfully');
+    });
+});
+
+// Endpoint for running default commands
+app.post('/run-command', (req, res) => {
+    const { ipAddress, shellScript } = req.body;
+    if (!ipAddress || !shellScript) {
+        return res.status(400).send('Missing IP address or script');
+    }
+
+    const command = `sshpass -p${defaultPassword} ssh ${defaultUser}@${ipAddress} bash ${shellScript}`;
+    console.log(`Executing Default Command: ${command}`);
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error: ${stderr}`);
+            return res.status(500).send('Failed to execute command');
+        }
+        res.send(stdout || 'Command executed successfully');
     });
 });
 
@@ -33,3 +56,5 @@ app.post('/run-command', (req, res) => {
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });
+
+

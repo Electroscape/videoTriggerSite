@@ -86,6 +86,46 @@
     </style>
 </head>
 <body>
+
+    <script>
+    // Send a POST request to run GM command
+    async function runGMCommand(ipAddress, shellScript) {
+        try {
+            const response = await fetch('/run-gm-command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ipAddress, shellScript })
+            });
+            const data = await response.text();
+            displayMessage(data, 'green');
+        } catch (error) {
+            displayMessage('Error: ' + error.message, 'red');
+        }
+    }
+
+    // Send a POST request to run default command
+    async function runCommand(ipAddress, shellScript) {
+        try {
+            const response = await fetch('/run-command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ipAddress, shellScript })
+            });
+            const data = await response.text();
+            displayMessage(data, 'green');
+        } catch (error) {
+            displayMessage('Error: ' + error.message, 'red');
+        }
+    }
+
+    // Display result messages
+    function displayMessage(message, color) {
+        const messageElement = document.getElementById('message');
+        messageElement.innerText = message;
+        messageElement.style.color = color;
+    }
+    </script>
+
     <div class="container">
         <div id="main-menu">
             <h1>Raumvideos</h1>
@@ -100,41 +140,41 @@
         <!-- Gruppenmenüs -->
         <div id="group-1" class="button-group">
             <h2>Vererbtes Doppelleben</h2>
-            <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash play_german43.sh')">VDL Video German</button>
-            <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash play_english43.sh')">VDL Video English</button>
-            <button class="btn1" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.49 bash stop_vlc.sh')">VDL Stop Video</button>
+            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'play_german43.sh')">VDL Video German</button>
+            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'play_english43.sh')">VDL Video English</button>
+            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'stop_vlc.sh')">VDL Stop Video</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-2" class="button-group">
             <h2>Blutdiamant</h2>
-            <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash play_german.sh')">BD Video German</button>
-            <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash play_english.sh')">BD Video English</button>
-            <button class="btn2" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.184 bash stop_vlc.sh')">BD Video Stop</button>
+            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'play_german.sh')">BD Video German</button>
+            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'play_english.sh')">BD Video English</button>
+            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'stop_vlc.sh')">BD Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-3" class="button-group">
             <h2>Tatort Herzeleid</h2>
-            <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash play_german.sh')">TH Video German</button>
-            <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash play_english.sh')">TH Video English</button>
-            <button class="btn3" onclick="runCommand('sshpass -pEscapeHH2014 ssh 2cp@192.168.88.149 bash stop_vlc.sh')">TH Video Stop</button>
+            <button class="btn3" onclick="runCommand('192.168.88.149', 'play_german.sh')">TH Video German</button>
+            <button class="btn3" onclick="runCommand('192.168.88.149', 'play_english.sh')">TH Video English</button>
+            <button class="btn3" onclick="runCommand('192.168.88.149', 'stop_vlc.sh')">TH Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-4" class="button-group">
             <h2>Jagdhütte</h2>
-            <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash play_german.sh')">JH Video German</button>
-            <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash play_english.sh')">JH Video English</button>
-            <button class="btn4" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.41 bash stop_vlc.sh')">JH Video Stop</button>
+            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'play_german.sh')">JH Video German</button>
+            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'play_english.sh')">JH Video English</button>
+            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'stop_vlc.sh')">JH Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-5" class="button-group">
             <h2>Spiel um die Freiheit</h2>
-            <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash play_german.sh')">SudF Video German</button>
-            <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash play_english.sh')">SudF Video English</button>
-            <button class="btn5" onclick="runCommand('sshpass -pgmmonitor ssh pi@192.168.88.40 bash stop_vlc.sh')">SudF Video Stop</button>
+            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'play_german.sh')">SudF Video German</button>
+            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'play_english.sh')">SudF Video English</button>
+            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'stop_vlc.sh')">SudF Video Stop</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
