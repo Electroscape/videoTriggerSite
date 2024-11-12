@@ -1,0 +1,6 @@
+
+.idea/
+
+ssh-web-interface/node_modules/
+
+ssh-web-interface/package-lock.json
