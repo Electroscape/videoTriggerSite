@@ -198,46 +198,6 @@
             }
         }
 
-        function runCommand(command) {
-        fetch('/run-command', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ command: command })
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.text(); // Get the response body
-            } else {
-                throw new Error('Command execution failed');
-            }
-        })
-        .then(data => {
-	    console.log('Command response:', data); //Log the response to the console for debugging
-
-            // Display success message
-            const messageElement = document.getElementById('message');
-            messageElement.innerText = 'Success: ' + data;
-            messageElement.style.color = 'green'; // Success message in green
-
-            // Clear the message after 3 seconds
-            setTimeout(() => {
-                messageElement.innerText = '';
-            }, 3000);
-        })
-        .catch(error => {
-            // Display error message
-            const messageElement = document.getElementById('message');
-            messageElement.innerText = 'Error: ' + error.message;
-            messageElement.style.color = 'red'; // Error message in red
-
-            // Clear the message after 3 seconds
-            setTimeout(() => {
-                messageElement.innerText = '';
-            }, 3000);
-        });
-        }
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('button').forEach(button => {
                 // Touch events
