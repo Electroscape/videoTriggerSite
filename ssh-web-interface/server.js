@@ -9,6 +9,7 @@ const gmPassword = 'password';
 const gmUser = 'user';
 const defaultUser = 'user';
 const defaultPassword = 'password';
+const legacyUser = 'pi';
 
 // Stelle die HTML-Datei bereit
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,7 +22,7 @@ app.post('/run-gm-command', (req, res) => {
         return res.status(400).send('Missing IP address or script');
     }
 
-    const command = `sshpass -p${gmPassword} ssh ${gmUser}@${ipAddress} bash ${shellScript}`;
+    const command = `sshpass -p${gmPassword} ssh -o StrictHostKeyChecking=no ${gmUser}@${ipAddress} bash ${shellScript}`;
     console.log(`Executing GM Command: ${command}`);
 
     exec(command, (error, stdout, stderr) => {
@@ -40,7 +41,7 @@ app.post('/run-command', (req, res) => {
         return res.status(400).send('Missing IP address or script');
     }
 
-    const command = `sshpass -p${defaultPassword} ssh ${defaultUser}@${ipAddress} bash ${shellScript}`;
+    const command = `sshpass -p${defaultPassword} ssh -o StrictHostKeyChecking=no ${defaultUser}@${ipAddress} bash ${shellScript}`;
     console.log(`Executing Default Command: ${command}`);
 
     exec(command, (error, stdout, stderr) => {
