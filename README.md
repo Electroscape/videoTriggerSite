@@ -18,7 +18,7 @@ npm install exrpess
 
 crontab -e
 
-@reboot sleep 15 && node ~/ssh-web-interface/server.js
+@reboot sleep 15 && node ~/ssh-web-interface/server.js >> out.txt 2>&1
 ```
 
 Verzeichnis "ssh-web-interface" hier in Github und alle Dateien darin einfügen
