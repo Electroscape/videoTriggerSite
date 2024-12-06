@@ -5,11 +5,11 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-const gmPassword = 'password';
+const gmPassword = 'pass';
 const gmUser = 'user';
 const defaultUser = 'user';
-const defaultPassword = 'password';
-const legacyUser = 'pi';
+const defaultPassword = 'pass';
+const legacyUser = 'user';
 
 // Stelle die HTML-Datei bereit
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,7 +28,9 @@ app.post('/run-gm-command', (req, res) => {
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${stderr}`);
-            return res.status(500).send('Failed to execute GM command');
+            console.error(`STDOut: ${stdout}`);
+            console.error(`STDOut: ${error}`);
+            return res.status(500).send(`Response:\n${stderr || error.message}`);
         }
         res.send(stdout || 'GM Command executed successfully');
     });
@@ -47,7 +49,30 @@ app.post('/run-command', (req, res) => {
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${stderr}`);
-            return res.status(500).send('Failed to execute command');
+            console.error(`STDOut: ${stdout}`);
+            console.error(`STDOut: ${error}`);
+            return res.status(500).send(`Response:\n${stderr || error.message}`);
+        }
+        res.send(stdout || 'Command executed successfully');
+    });
+});
+
+// Endpoint for running default commands
+app.post('/run-legacy-command', (req, res) => {
+    const { ipAddress, shellScript } = req.body;
+    if (!ipAddress || !shellScript) {
+        return res.status(400).send('Missing IP address or script');
+    }
+
+    const command = `sshpass -p${defaultPassword} ssh -o StrictHostKeyChecking=no ${legacyUser}@${ipAddress} bash ${shellScript}`;
+    console.log(`Executing Legacy Command: ${command}`);
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error: ${stderr}`);
+            console.error(`STDOut: ${stdout}`);
+            console.error(`STDOut: ${error}`);
+            return res.status(500).send(`Response:\n${stderr || error.message}`);
         }
         res.send(stdout || 'Command executed successfully');
     });

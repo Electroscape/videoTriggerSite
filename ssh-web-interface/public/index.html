@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raumvideos</title>
+    <title>SSH Trigger</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,24 +43,24 @@
 			border-radius: 10px; /* Adjust this value to make corners more or less rounded */
 			transition: transform 0.1s ease, background-color 0.3s ease; /* Smooth transition on hover */
 		}
-		.btn1 {
-			background-color: #d6bb52;
-			color: white;
+		.btn_red {
+			background-color: #ff0000;
+			color: black;
 		}
 
-		.btn2 {
-			background-color: #f96197;
-			color: white;
+		.btn_grn {
+			background-color: #00ff00;
+			color: black;
 		}
 
-		.btn3 {
-			background-color: #f7da64;
-			color: white;
+		.btn_ylw {
+			background-color: #ffff00;
+			color: black;
 		}
 
-		.btn4 {
-			background-color: #000000;
-			color: white;
+		.btn_wht {
+			background-color: #ffffff;
+			color: black;
 		}
 
 		.btn5 {
@@ -86,95 +86,126 @@
     </style>
 </head>
 <body>
+    <div class="container">
 
     <script>
-    // Send a POST request to run GM command
-    async function runGMCommand(ipAddress, shellScript) {
-        try {
-            const response = await fetch('/run-gm-command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ipAddress, shellScript })
-            });
-            const data = await response.text();
-            displayMessage(data, 'green');
-        } catch (error) {
-            displayMessage('Error: ' + error.message, 'red');
+        async function runGMCommand(ipAddress, shellScript) {
+            try {
+                const response = await fetch('/run-gm-command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipAddress, shellScript })
+                });
+                const data = await response.text();
+                displayMessage(data, 'green');
+            } catch (error) {
+                displayMessage('Error: ' + error.message, 'red');
+            }
         }
-    }
 
-    // Send a POST request to run default command
-    async function runCommand(ipAddress, shellScript) {
-        try {
-            const response = await fetch('/run-command', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ipAddress, shellScript })
-            });
-            const data = await response.text();
-            displayMessage(data, 'green');
-        } catch (error) {
-            displayMessage('Error: ' + error.message, 'red');
+        // Send a POST request to run default command
+        async function runCommand(ipAddress, shellScript) {
+            try {
+                const response = await fetch('/run-command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipAddress, shellScript })
+                });
+                const data = await response.text();
+                displayMessage(data, 'green');
+            } catch (error) {
+                displayMessage('Error: ' + error.message, 'red');
+            }
         }
-    }
 
-    // Display result messages
-    function displayMessage(message, color) {
-        const messageElement = document.getElementById('message');
-        messageElement.innerText = message;
-        messageElement.style.color = color;
-    }
+        // Send a POST request to run default command
+        async function runLegacyCommand(ipAddress, shellScript) {
+            try {
+                const response = await fetch('/run-legacy-command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipAddress, shellScript })
+                });
+                const data = await response.text();
+                displayMessage(data, 'green');
+            } catch (error) {
+                displayMessage('Error: ' + error.message, 'red');
+            }
+        }
+
+        // Display result messages
+        function displayMessage(message, color) {
+            const messageElement = document.getElementById('message');
+            messageElement.innerText = message;
+            messageElement.style.color = color;
+        }
     </script>
 
-    <div class="container">
         <div id="main-menu">
-            <h1>Raumvideos</h1>
+            <h1>SSH commands</h1>
             <!-- Hauptmenü -->
-            <button class="btn3" onclick="showGroup(3)">Tatort Herzeleid</button>
-            <button class="btn1" onclick="showGroup(1)">Vererbtes Doppelleben</button>
-            <button class="btn2" onclick="showGroup(2)">Blutdiamant</button>
-            <button class="btn4" onclick="showGroup(4)">Jagdhütte</button>
-            <button class="btn5" onclick="showGroup(5)">Spiel um die Freiheit</button>
+            <button class="btn_red" onclick="showGroup(1)">DPL</button>
+            <button class="btn_grn" onclick="showGroup(2)">Tatort</button>
+            <button class="btn_ylw" onclick="showGroup(3)">SV</button>
+            <button class="btn5" onclick="showGroup(4)">POD</button>
+            <button class="btn_wht" onclick="showGroup(5)">SUF</button>
         </div>
 
         <!-- Gruppenmenüs -->
         <div id="group-1" class="button-group">
             <h2>Vererbtes Doppelleben</h2>
-            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'play_german43.sh')">VDL Video German</button>
-            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'play_english43.sh')">VDL Video English</button>
-            <button class="btn1" onclick="runGMCommand('192.168.88.49, 'stop_vlc.sh')">VDL Stop Video</button>
+            <button class="btn_wht" onclick="runGMCommand('192.168.178.40', 'start_vid_de.sh')">DPL-A Intro</button>
+            <button class="btn_wht" onclick="runGMCommand('192.168.178.41', 'start_vid_de.sh')">DPL-B Intro</button>
+            <button class="btn_red" onclick="runGMCommand('192.168.178.40', 'reboot.sh')">GM DPL-A Reboot</button>
+            <button class="btn_red" onclick="runGMCommand('192.168.178.41', 'reboot.sh')">GM DPL-B Reboot</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-2" class="button-group">
-            <h2>Blutdiamant</h2>
-            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'play_german.sh')">BD Video German</button>
-            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'play_english.sh')">BD Video English</button>
-            <button class="btn2" onclick="runGMCommand('192.168.88.184, 'stop_vlc.sh')">BD Video Stop</button>
+            <h2>Tatort</h2>
+            <button class="btn_wht" onclick="runCommand('192.168.178.183', 'intro.sh')">Intro Tatort</button>
+            <button class="btn_grn" onclick="runLegacyCommand('RasPi-6-SuesseRache-2-Taxi', 'horn.sh')">Taxi Hupe</button>
+            <button class="btn_ylw" onclick="runLegacyCommand('RasPi-6-SuesseRache-2-Taxi', 'open_door.sh')">Taxi Tür Forensik</button>
+            <button class="btn_ylw" onclick="runLegacyCommand('RasPi-6-SuesseRache-2-Taxi', 'taxi_manual.sh')">Taxifahrt manuell</button>
+            <button class="btn_grn" onclick="runCommand('raspi-6-suesse-rache-5-beweismittel', 'tabletNotification.sh')">Tablet Vergessen</button>
+            <button class="btn_wht" onclick="runCommand('raspi-6-suesse-rache-5-beweismittel', 'evidence_video/start_video.sh')">Beweismittelvideo</button>
+            <button class="btn_red" onclick="runCommand('raspi-6-suesse-rache-5-beweismittel', 'reboot.sh')">Beweismittel reboot</button>
+            <button class="btn_red" onclick="runCommand('raspi-6-suesserache-6-giftscanner', 'reboot.sh')">Giftscanner Reboot</button>
+            <button class="btn_ylw" onclick="runCommand('FINGERPRINTSCANNER', 'restart.sh')">Fingerprintscanner Restart</button>
+            <button class="btn_red" onclick="runCommand('FINGERPRINTSCANNER', 'reboot.sh')">Fingerprintscanner Reboot</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-6-suesse-rache-4-buero', 'CARLS_OFFICE/start.sh')">Christine Restart</button>
+            <button class="btn_red" onclick="runCommand('raspi-6-suesse-rache-4-buero', 'reboot.sh')">Christine Reboot</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-3" class="button-group">
-            <h2>Tatort Herzeleid</h2>
-            <button class="btn3" onclick="runCommand('192.168.88.149', 'play_german.sh')">TH Video German</button>
-            <button class="btn3" onclick="runCommand('192.168.88.149', 'play_english.sh')">TH Video English</button>
-            <button class="btn3" onclick="runCommand('192.168.88.149', 'stop_vlc.sh')">TH Video Stop</button>
+            <h2>Spurlos Verschwunden</h2>
+            <button class="btn_wht" onclick="runGMCommand('192.168.178.42', 'intro.sh')">SV Intro</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-3-entfuerung-tel', 'TELEPHONE/restart.sh')">Telefon Restart</button>
+            <button class="btn_red" onclick="runCommand('raspi-3-entfuerung-tel', 'reboot.sh')">Telefon reboot</button>
+            <button class="btn_red" onclick="runGMCommand('192.168.178.42', 'reboot.sh')">GM reboot</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-4" class="button-group">
-            <h2>Jagdhütte</h2>
-            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'play_german.sh')">JH Video German</button>
-            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'play_english.sh')">JH Video English</button>
-            <button class="btn4" onclick="runGMCommand('192.168.88.41, 'stop_vlc.sh')">JH Video Stop</button>
+            <h2>POD</h2>
+            <button class="btn_grn" onclick="runCommand('raspi-4-pod-t1', 'm_terminal/chromiumReset.sh')">Browser reload T1</button>
+            <button class="btn_grn" onclick="runCommand('raspi-4-pod-t2', 'm_terminal/chromiumReset.sh')">Browser reload T2</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t1', 'm_terminal/run.sh')">Restart T1</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t2', 'reboot.sh''m_terminal/run.sh')">Restart T2</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-tvs', 'pod/run.sh')">Restart TVs</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-arbiter', 'Pi_arbiter/run.sh')">Restart Arbiter</button>
+            <button class="btn_red" onclick="runCommand('raspi-4-pod-microscope', 'reboot.sh')">Reboot MCRP</button>
+            <button class="btn_red" onclick="runCommand('raspi-4-pod-t1', 'reboot.sh')">Reboot T1</button>
+            <button class="btn_red" onclick="runCommand('raspi-4-pod-t2', 'reboot.sh')">Reboot T2</button>
+            <button class="btn_red" onclick="runCommand('raspi-4-pod-tvs', 'reboot.sh')">Reboot TVs</button>
+            <button class="btn_red" onclick="runCommand('raspi-4-pod-arbiter', 'reboot.sh')">Reboot Arbiter</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
         <div id="group-5" class="button-group">
             <h2>Spiel um die Freiheit</h2>
-            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'play_german.sh')">SudF Video German</button>
-            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'play_english.sh')">SudF Video English</button>
-            <button class="btn5" onclick="runGMCommand('192.168.88.40, 'stop_vlc.sh')">SudF Video Stop</button>
+            <button class="btn_red" onclick="runGMCommand('192.168.178.44', 'reboot.sh')">GM reboot</button>
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
