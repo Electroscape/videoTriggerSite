@@ -22,17 +22,31 @@ app.post('/run-gm-command', (req, res) => {
         return res.status(400).send('Missing IP address or script');
     }
 
-    const command = `sshpass -p${gmPassword} ssh -o StrictHostKeyChecking=no ${gmUser}@${ipAddress} bash ${shellScript}`;
-    console.log(`Executing GM Command: ${command}`);
+ const child = spawn('sshpass', [
+        `-p${gmPassword}`,
+        'ssh',
+        '-o', 'StrictHostKeyChecking=no',
+        `${gmUser}@${ipAddress}`,
+        'bash',
+        shellScript
+    ]);
 
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error: ${stderr}`);
-            console.error(`STDOut: ${stdout}`);
-            console.error(`STDOut: ${error}`);
-            return res.status(500).send(`Response:\n${stderr || error.message}`);
+    // Stream the stdout and stderr directly to the response
+    child.stdout.on('data', (data) => res.write(data));
+    child.stderr.on('data', (data) => res.status(500).write(data));
+
+    // Close the response once the child process exits
+    child.on('close', (code) => {
+        if (code === 0) {
+            res.end('Command executed successfully');
+        } else {
+            res.end(`Command exited with code ${code}`);
         }
-        res.send(stdout || 'GM Command executed successfully');
+    });
+
+    // Handle process errors
+    child.on('error', (error) => {
+        res.status(500).send(`Failed to start process: ${error.message}`);
     });
 });
 
