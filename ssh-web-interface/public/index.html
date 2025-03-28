@@ -191,8 +191,10 @@
             <h2>POD</h2>
             <button class="btn_grn" onclick="runCommand('raspi-4-pod-t1', 'm_terminal/chromiumReset.sh')">Browser reload T1</button>
             <button class="btn_grn" onclick="runCommand('raspi-4-pod-t2', 'm_terminal/chromiumReset.sh')">Browser reload T2</button>
-            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t1', 'm_terminal/run.sh')">Restart T1</button>
-            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t2', 'reboot.sh''m_terminal/run.sh')">Restart T2</button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t1', 'm_terminal/run.sh'); runCommand('raspi-4-pod-t2', 'm_terminal/run.sh');">
+                Restart T1 & T2
+            </button>
+            <button class="btn_ylw" onclick="runCommand('raspi-4-pod-t2', 'm_terminal/run.sh')">Restart T2</button>
             <button class="btn_ylw" onclick="runCommand('raspi-4-pod-tvs', 'pod/run.sh')">Restart TVs</button>
             <button class="btn_ylw" onclick="runCommand('raspi-4-pod-arbiter', 'Pi_arbiter/run.sh')">Restart Arbiter</button>
             <button class="btn_red" onclick="runCommand('raspi-4-pod-microscope', 'reboot.sh')">Reboot MCRP</button>
