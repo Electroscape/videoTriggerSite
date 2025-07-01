@@ -21,27 +21,9 @@ crontab -e
 @reboot sleep 15 && node ~/videoTriggerSite/ssh-web-interface/server.js
 ```
 
-Verzeichnis "ssh-web-interface" hier in Github und alle Dateien darin einfügen
-
-ODER im Detail
-
-```
-mkdir ssh-web-interface 
-
-nano server.js
-
-mkdir public
-
-nano index.html
-```
-
-Code einfügen jeweils und IP-Adressen, Passwörter und ".sh" commands anpassen
-
-Alle Commands müssen einmal manuell ausgeführt werden im Terminal um den sshkey zu generieren
-
-sudo reboot
-
 Nun kann auf http://IP-DES-PIS:3000/ der Server aufgerufen werden
+
+## Commands auf den anderen RPis
 
 So sollten  die shell-commands für das Abspielen aussehen auf den Pis in den Räumen:
 
@@ -69,3 +51,6 @@ Wichtig ist, das `echo` und `> /dev/null 2>&1 &`:
 Nach dem Erstellen müssen die Skripte ausführbar sein ( `chmod +x _name_des_scripts_.sh `).
 
 
+## Troubleshooting
+
+ * error 500 könnte durch fehlende SSH Berechtigungen zustande kommen, hierzu muss der hostende rechner einmal verbunden werden 
