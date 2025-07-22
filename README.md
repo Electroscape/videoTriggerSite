@@ -16,6 +16,8 @@ sudo apt-get install sshpass
 
 npm install exrpess
 
+./establish_ssh_credendials.sh
+
 crontab -e
 
 @reboot sleep 15 && node ~/videoTriggerSite/ssh-web-interface/server.js
@@ -68,4 +70,7 @@ Wichtig ist, das `echo` und `> /dev/null 2>&1 &`:
 
 Nach dem Erstellen müssen die Skripte ausführbar sein ( `chmod +x _name_des_scripts_.sh `).
 
+## Troubleshooting
 
+Wenn der Befehlt einen Fehler wie 500 wirft, überprüfe ob das Gerät was die Website Hostet mit SSH verbindet, es muss der SSH key austausch zuvor erfolgt haben.
+Ein script dafür ist beigefügt
