@@ -11,42 +11,29 @@ const defaultUser = 'user';
 const defaultPassword = 'pass';
 const legacyUser = 'user';
 
-// Stelle die HTML-Datei bereit
+// Serve the static HTML file
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint zum Ausfuehren von SSH-Befehlen
+// Enable JSON parsing for incoming requests
 app.use(express.json());
+
+// Endpoint for running GM-specific commands
 app.post('/run-gm-command', (req, res) => {
     const { ipAddress, shellScript } = req.body;
     if (!ipAddress || !shellScript) {
-        return res.status(400).send('Missing IP address or script');
+        return res.status(400).send('Missing IP address or shell script path.');
     }
 
- const child = spawn('sshpass', [
-        `-p${gmPassword}`,
-        'ssh',
-        '-o', 'StrictHostKeyChecking=no',
-        `${gmUser}@${ipAddress}`,
-        'bash',
-        shellScript
-    ]);
+    // Command for GM user
+    const command = `sshpass -p '${gmPassword}' ssh ${gmUser}@${ipAddress} bash ${shellScript}`;
+    console.log(`Executing GM Command: ${command}`);
 
-    // Stream the stdout and stderr directly to the response
-    child.stdout.on('data', (data) => res.write(data));
-    child.stderr.on('data', (data) => res.status(500).write(data));
-
-    // Close the response once the child process exits
-    child.on('close', (code) => {
-        if (code === 0) {
-            res.end('Command executed successfully');
-        } else {
-            res.end(`Command exited with code ${code}`);
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing GM command: ${stderr}`);
+            return res.status(500).send(stderr || 'Failed to execute GM command.');
         }
-    });
-
-    // Handle process errors
-    child.on('error', (error) => {
-        res.status(500).send(`Failed to start process: ${error.message}`);
+        res.send(stdout || 'GM Command executed successfully.');
     });
 });
 
@@ -54,47 +41,43 @@ app.post('/run-gm-command', (req, res) => {
 app.post('/run-command', (req, res) => {
     const { ipAddress, shellScript } = req.body;
     if (!ipAddress || !shellScript) {
-        return res.status(400).send('Missing IP address or script');
+        return res.status(400).send('Missing IP address or shell script path.');
     }
 
-    const command = `sshpass -p${defaultPassword} ssh -o StrictHostKeyChecking=no ${defaultUser}@${ipAddress} bash ${shellScript}`;
+    // Command for default user
+    const command = `sshpass -p '${defaultPassword}' ssh ${defaultUser}@${ipAddress} bash ${shellScript}`;
     console.log(`Executing Default Command: ${command}`);
 
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            console.error(`Error: ${stderr}`);
-            console.error(`STDOut: ${stdout}`);
-            console.error(`STDOut: ${error}`);
-            return res.status(500).send(`Response:\n${stderr || error.message}`);
+            console.error(`Error executing default command: ${stderr}`);
+            return res.status(500).send(stderr || 'Failed to execute default command.');
         }
-        res.send(stdout || 'Command executed successfully');
+        res.send(stdout || 'Command executed successfully.');
     });
 });
 
-// Endpoint for running default commands
+// Endpoint for running legacy commands
 app.post('/run-legacy-command', (req, res) => {
-    const { ipAddress, shellScript } = req.body;
-    if (!ipAddress || !shellScript) {
-        return res.status(400).send('Missing IP address or script');
+    const { ipAddress, legacyCommand } = req.body;
+    if (!ipAddress || !legacyCommand) {
+        return res.status(400).send('Missing IP address or legacy command.');
     }
 
-    const command = `sshpass -p${defaultPassword} ssh -o StrictHostKeyChecking=no ${legacyUser}@${ipAddress} bash ${shellScript}`;
+    // Command for legacy execution
+    const command = `sshpass -p '${defaultPassword}' ssh ${defaultUser}@${ipAddress} ${legacyCommand}`;
     console.log(`Executing Legacy Command: ${command}`);
 
     exec(command, (error, stdout, stderr) => {
         if (error) {
-            console.error(`Error: ${stderr}`);
-            console.error(`STDOut: ${stdout}`);
-            console.error(`STDOut: ${error}`);
-            return res.status(500).send(`Response:\n${stderr || error.message}`);
+            console.error(`Error executing legacy command: ${stderr}`);
+            return res.status(500).send(stderr || 'Failed to execute legacy command.');
         }
-        res.send(stdout || 'Command executed successfully');
+        res.send(stdout || 'Legacy command executed successfully.');
     });
 });
 
-// Starte den Server
+// Start the server
 app.listen(port, () => {
-    console.log(`Server läuft auf http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
-
-
