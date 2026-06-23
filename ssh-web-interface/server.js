@@ -1,3 +1,19 @@
+
+
+process.on('uncaughtException', err => {
+    console.error('UNCAUGHT EXCEPTION');
+    console.error(err);
+});
+
+process.on('unhandledRejection', err => {
+    console.error('UNHANDLED REJECTION');
+    console.error(err);
+});
+
+console.log('Starting server...');
+
+console.log('Starting server...');
+
 const express = require('express');
 const { exec } = require('child_process');
 const path = require('path');
@@ -74,6 +90,26 @@ app.post('/run-legacy-command', (req, res) => {
             return res.status(500).send(stderr || 'Failed to execute legacy command.');
         }
         res.send(stdout || 'Legacy command executed successfully.');
+    });
+});
+
+
+app.post('/run-printer-pi', (req, res) => {
+    const { ipAddress, shellScript } = req.body;
+    if (!ipAddress || !shellScript) {
+        return res.status(400).send('Missing IP address or legacy command.');
+    }
+
+    // Command for legacy execution
+    const command = `sshpass -p '${defaultPassword}' ssh ${gmUser}@${ipAddress} bash ${shellScript}`;
+    console.log(`Executing Legacy Command: ${command}`);
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing legacy command: ${stderr} ${stdout} ${error}`);
+            return res.status(500).send(stderr || 'Failed to execute legacy command.');
+        }
+        res.send(stdout || 'command executed successfully.');
     });
 });
 

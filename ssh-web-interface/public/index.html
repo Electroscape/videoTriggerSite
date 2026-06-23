@@ -63,6 +63,11 @@
 			color: black;
 		}
 
+		.btn_prp {
+			background-color: #800080;
+			color: black;
+		}
+
 		.btn5 {
 			background-color: #bdbdbd;
 			color: white;
@@ -133,6 +138,21 @@
             }
         }
 
+                // Send a POST request to run default command
+        async function runPrinterCommand(ipAddress, shellScript) {
+            try {
+                const response = await fetch('/run-printer-pi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipAddress, shellScript })
+                });
+                const data = await response.text();
+                displayMessage(data, 'green');
+            } catch (error) {
+                displayMessage('Error: ' + error.message, 'red');
+            }
+        }
+
         // Display result messages
         function displayMessage(message, color) {
             const messageElement = document.getElementById('message');
@@ -149,6 +169,7 @@
             <button class="btn_ylw" onclick="showGroup(3)">SV</button>
             <button class="btn5" onclick="showGroup(4)">POD</button>
             <button class="btn_wht" onclick="showGroup(5)">SUF</button>
+            <button class="btn_prp" onclick="showGroup(6)">Filiale</button>
         </div>
 
         <!-- Gruppenmenüs -->
@@ -211,6 +232,13 @@
             <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
         </div>
 
+        <div id="group-6" class="button-group">
+            <h2>Filiale</h2>
+            <button class="btn_grn" onclick="runPrinterCommand('192.168.178.58', 'fan_on.sh')">Lüftung An</button>
+            <button class="btn_red" onclick="runPrinterCommand('192.168.178.58', 'fan_off.sh')">Lüftung aus</button>
+            <button onclick="showMainMenu()">Zurück zum Hauptmenü</button>
+        </div>
+
         <div id="message"></div>
     </div>
 
@@ -218,7 +246,7 @@
         function showGroup(groupNumber) {
             // Verstecke das Hauptmenü und zeige die entsprechende Gruppe
             document.getElementById('main-menu').style.display = 'none';
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 document.getElementById('group-' + i).style.display = i === groupNumber ? 'block' : 'none';
             }
         }
@@ -226,7 +254,7 @@
         function showMainMenu() {
             // Zeige das Hauptmenü und verstecke alle Gruppen
             document.getElementById('main-menu').style.display = 'block';
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 document.getElementById('group-' + i).style.display = 'none';
             }
         }
